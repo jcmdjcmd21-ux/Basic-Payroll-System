@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PayEase | Payroll Dashboard</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><b>P</b> PayEase</div>
+        <p class="label">WORKSPACE</p>
+
+        <a class="active" href="/">▦ &nbsp; Dashboard</a>
+        <a href="/employees">♙ &nbsp; Employees</a>
+        <a href="/employees/new">＋ &nbsp; Add employee</a>
+
+        <form class="logout-form" th:action="@{/logout}" method="post">
+            <button class="logout-btn" type="submit">↪ &nbsp; Sign out</button>
+        </form>
+
+        <div class="admin">
+            <span>HR</span>
+            <div>
+                <strong>Administrator</strong>
+                <small>Signed in</small>
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <small>Workspace / Dashboard</small>
+                <h1>Payroll Dashboard</h1>
+            </div>
+            <span class="demo">● Admin session</span>
+        </header>
+
+        <section class="welcome">
+            <div>
+                <small>PAYROLL OVERVIEW</small>
+                <h2>Good day! 👋</h2>
+                <p>Manage employee information and calculate payroll in one place.</p>
+            </div>
+
+            <a class="btn" th:href="@{/employees/new}">
+                ＋ Add employee
+            </a>
+        </section>
+
+        <div class="alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+        <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+        <section class="stats">
+            <article>
+                <small>Total employees</small>
+                <strong th:text="${employeeCount}">0</strong>
+                <em>Employee records</em>
+            </article>
+
+            <article>
+                <small>Gross payroll</small>
+                <strong>₱<span th:text="${#numbers.formatDecimal(totalGross,1,'COMMA',2,'POINT')}">0.00</span></strong>
+                <em>Before deductions</em>
+            </article>
+
+            <article>
+                <small>Net payroll</small>
+                <strong>₱<span
+                        th:text="${#numbers.formatDecimal(totalPayroll,1,'COMMA',2,'POINT')}">0.00</span></strong>
+                <em>Take-home pay total</em>
+            </article>
+        </section>
+
+        <section class="columns">
+            <article class="panel employee-panel" id="employees">
+
+                <div class="heading">
+                    <div>
+                        <h3>Employee payroll</h3>
+                        <p>Salary summary and deductions</p>
+                    </div>
+                    <span class="pill" th:text="${employeeCount}+' records'">0 records</span>
+                </div>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>EMPLOYEE</th>
+                                <th>POSITION</th>
+                                <th>GROSS PAY</th>
+                                <th>DEDUCTIONS</th>
+                                <th>NET PAY</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr th:each="e:${employees}">
+                                <td>
+                                    <button type="button" class="employee-name" data-open-modal="employeeDetailsModal"
+                                        th:attr="
+                                    data-id=${e.employeeId},
+                                    data-name=${e.fullName},
+                                    data-position=${e.position},
+                                    data-rate=${e.dailyRate},
+                                    data-days=${e.daysWorked},
+                                    data-sss=${e.sss},
+                                    data-philhealth=${e.philHealth},
+                                    data-pagibig=${e.pagIbig},
+                                    data-gross=${e.grossSalary},
+                                    data-deductions=${e.totalDeductions},
+                                    data-net=${e.netSalary}">
+
+                                        <strong th:text="${e.fullName}">Name</strong>
+                                        <small class="id" th:text="${e.employeeId}">EMP-001</small>
+                                    </button>
+                                </td>
+
+                                <td th:text="${e.position}">Position</td>
+
+                                <td th:text="'₱'+${#numbers.formatDecimal(e.grossSalary,1,'COMMA',2,'POINT')}">₱0</td>
+
+                                <td th:text="'₱'+${#numbers.formatDecimal(e.totalDeductions,1,'COMMA',2,'POINT')}">₱0
+                                </td>
+
+                                <td class="net"
+                                    th:text="'₱'+${#numbers.formatDecimal(e.netSalary,1,'COMMA',2,'POINT')}">₱0</td>
+
+                                <td>
+                                    <form th:action="@{/employees/delete/{id}(id=${e.employeeId})}" method="post"
+                                        onsubmit="return confirm('Delete this employee?')">
+
+                                        <button class="delete" type="submit" aria-label="Delete employee">×</button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(employees)}">
+                                <td colspan="6">
+                                    No employee records yet. Add your first employee.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="note">
+                    All amounts are shown in Philippine pesos (PHP).
+                    Records are saved in MySQL.
+                </p>
+            </article>
+        </section>
+
+        <footer>
+            PayEase Student Payroll System
+            <span>Java · Spring Boot · MySQL</span>
+        </footer>
+    </main>
+
+    <!-- ADD EMPLOYEE MODAL -->
+    <div class="modal-overlay" id="addEmployeeModal" aria-hidden="true">
+
+        <div class="modal-box" role="dialog" aria-modal="true">
+
+            <div class="modal-heading">
+                <div>
+                    <small>EMPLOYEE RECORD</small>
+                    <h2>Add employee</h2>
+                    <p>Enter employee information and payroll details.</p>
+                </div>
+
+                <button type="button" class="modal-close" data-close-modal>×</button>
+            </div>
+
+            <form class="entry" th:action="@{/employees}" th:object="${newEmployee}" method="post">
+
+                <div class="form-grid">
+                    <label>
+                        Employee ID
+                        <input th:field="*{employeeId}" placeholder="e.g. EMP-003" required maxlength="20">
+                    </label>
+
+                    <label>
+                        Full name
+                        <input th:field="*{fullName}" placeholder="Employee name" required maxlength="80">
+                    </label>
+
+                    <label class="full">
+                        Position
+                        <input th:field="*{position}" placeholder="e.g. Staff" required maxlength="60">
+                    </label>
+
+                    <label>
+                        Daily rate (₱)
+                        <input th:field="*{dailyRate}" type="number" min="0" step=".01" placeholder="500" required>
+                    </label>
+
+                    <label>
+                        Days worked
+                        <input th:field="*{daysWorked}" type="number" min="0" max="31" placeholder="22" required>
+                    </label>
+                </div>
+
+                <div class="rule">DEDUCTIONS (PHP)</div>
+
+                <div class="three">
+                    <label>
+                        SSS
+                        <input th:field="*{sss}" type="number" min="0" step=".01" placeholder="0.00">
+                    </label>
+
+                    <label>
+                        PhilHealth
+                        <input th:field="*{philHealth}" type="number" min="0" step=".01" placeholder="0.00">
+                    </label>
+
+                    <label>
+                        Pag-IBIG
+                        <input th:field="*{pagIbig}" type="number" min="0" step=".01" placeholder="0.00">
+                    </label>
+                </div>
+
+                <div class="hint">
+                    Gross = Daily rate × Days worked<br>
+                    Net = Gross − Total deductions<br>
+                    Enter deduction amounts manually for this classroom demo.
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="btn cancel-btn" type="button" data-close-modal>Cancel</button>
+
+                    <button class="btn submit" type="submit">
+                        Calculate &amp; Save Payroll →
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- EMPLOYEE DETAILS MODAL -->
+    <div class="modal-overlay" id="employeeDetailsModal" aria-hidden="true">
+
+        <div class="modal-box details-box" role="dialog" aria-modal="true">
+
+            <div class="modal-heading">
+                <div>
+                    <small>EMPLOYEE PROFILE</small>
+                    <h2>Employee details</h2>
+                    <p id="detailId">Employee ID</p>
+                </div>
+
+                <button type="button" class="modal-close" data-close-modal>×</button>
+            </div>
+
+            <div class="details-grid">
+                <div><small>Full name</small><strong id="detailName">—</strong></div>
+                <div><small>Position</small><strong id="detailPosition">—</strong></div>
+                <div><small>Daily rate</small><strong id="detailRate">—</strong></div>
+                <div><small>Days worked</small><strong id="detailDays">—</strong></div>
+            </div>
+
+            <h3 class="breakdown-title">Payroll breakdown</h3>
+
+            <div class="breakdown">
+                <div><span>Gross salary</span><strong id="detailGross">—</strong></div>
+                <div><span>SSS</span><strong id="detailSSS">—</strong></div>
+                <div><span>PhilHealth</span><strong id="detailPhilHealth">—</strong></div>
+                <div><span>Pag-IBIG</span><strong id="detailPagibig">—</strong></div>
+                <div><span>Total deductions</span><strong id="detailDeductions">—</strong></div>
+                <div class="net-total"><span>Net salary</span><strong id="detailNet">—</strong></div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn cancel-btn" type="button" data-close-modal>Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let lastTrigger = null;
+
+            function openModal(id, trigger) {
+                const modal = document.getElementById(id);
+                if (!modal) return;
+
+                lastTrigger = trigger;
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.classList.add("modal-open");
+
+                const focusTarget = modal.querySelector("input, button");
+                if (focusTarget) focusTarget.focus();
+            }
+
+            function closeModal(modal) {
+                if (!modal) return;
+
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+
+                if (!document.querySelector(".modal-overlay.active")) {
+                    document.body.classList.remove("modal-open");
+                }
+
+                if (lastTrigger) lastTrigger.focus();
+            }
+
+            function peso(value) {
+                return "₱" + Number(value || 0).toLocaleString("en-PH", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            document.addEventListener("click", function (event) {
+
+                const trigger = event.target.closest("[data-open-modal]");
+
+                if (trigger) {
+                    const id = trigger.dataset.openModal;
+
+                    if (id === "employeeDetailsModal") {
+                        const d = trigger.dataset;
+
+                        document.getElementById("detailId").textContent = d.id || "";
+                        document.getElementById("detailName").textContent = d.name || "—";
+                        document.getElementById("detailPosition").textContent = d.position || "—";
+                        document.getElementById("detailRate").textContent = peso(d.rate);
+                        document.getElementById("detailDays").textContent = d.days || "0";
+
+                        document.getElementById("detailGross").textContent = peso(d.gross);
+                        document.getElementById("detailSSS").textContent = peso(d.sss);
+                        document.getElementById("detailPhilHealth").textContent = peso(d.philhealth);
+                        document.getElementById("detailPagibig").textContent = peso(d.pagibig);
+                        document.getElementById("detailDeductions").textContent = peso(d.deductions);
+                        document.getElementById("detailNet").textContent = peso(d.net);
+                    }
+
+                    openModal(id, trigger);
+                }
+
+                const closeButton = event.target.closest("[data-close-modal]");
+
+                if (closeButton) {
+                    closeModal(closeButton.closest(".modal-overlay"));
+                }
+
+                if (event.target.classList.contains("modal-overlay")) {
+                    closeModal(event.target);
+                }
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    document.querySelectorAll(".modal-overlay.active")
+                        .forEach(closeModal);
+                }
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

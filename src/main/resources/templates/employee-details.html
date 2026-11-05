@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PayEase | Employee Profile</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand"><b>P</b> PayEase</div>
+    <p class="label">WORKSPACE</p>
+
+    <a href="/">▦ &nbsp; Dashboard</a>
+    <a class="active" href="/employees">♙ &nbsp; Employees</a>
+    <a href="/employees/new">＋ &nbsp; Add employee</a>
+
+    <form class="logout-form" th:action="@{/logout}" method="post">
+        <button class="logout-btn" type="submit">↪ &nbsp; Sign out</button>
+    </form>
+
+    <div class="admin">
+        <span>HR</span>
+        <div>
+            <strong>Administrator</strong>
+            <small>Signed in</small>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <header>
+        <div>
+            <small>Workspace / Employees / Profile</small>
+            <h1>Employee Profile</h1>
+        </div>
+        <span class="demo">● Admin session</span>
+    </header>
+
+    <section class="welcome">
+        <div>
+            <small>EMPLOYEE INFORMATION</small>
+            <h2 th:text="${employee.fullName}">Employee Name</h2>
+            <p th:text="${employee.position}">Position</p>
+        </div>
+
+        <a class="btn cancel-btn" th:href="@{/employees}">
+            ← Back to employees
+        </a>
+    </section>
+
+    <section class="stats">
+        <article>
+            <small>Gross salary</small>
+            <strong th:text="'₱' + ${#numbers.formatDecimal(employee.grossSalary,1,'COMMA',2,'POINT')}">
+                ₱0.00
+            </strong>
+            <em>Before deductions</em>
+        </article>
+
+        <article>
+            <small>Total deductions</small>
+            <strong th:text="'₱' + ${#numbers.formatDecimal(employee.totalDeductions,1,'COMMA',2,'POINT')}">
+                ₱0.00
+            </strong>
+            <em>Combined deductions</em>
+        </article>
+
+        <article>
+            <small>Net salary</small>
+            <strong class="net"
+                    th:text="'₱' + ${#numbers.formatDecimal(employee.netSalary,1,'COMMA',2,'POINT')}">
+                ₱0.00
+            </strong>
+            <em>Take-home pay</em>
+        </article>
+    </section>
+
+    <section class="panel profile-panel">
+        <div class="heading">
+            <div>
+                <h3>Personal information</h3>
+                <p>Employee identification and employment details.</p>
+            </div>
+            <span class="pill">Employee record</span>
+        </div>
+
+        <div class="profile-grid">
+            <div>
+                <small>Employee ID</small>
+                <strong th:text="${employee.employeeId}">EMP-001</strong>
+            </div>
+
+            <div>
+                <small>Full name</small>
+                <strong th:text="${employee.fullName}">Employee</strong>
+            </div>
+
+            <div>
+                <small>Position</small>
+                <strong th:text="${employee.position}">Staff</strong>
+            </div>
+
+            <div>
+                <small>Daily rate</small>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.dailyRate,1,'COMMA',2,'POINT')}">
+                    ₱0.00
+                </strong>
+            </div>
+
+            <div>
+                <small>Days worked</small>
+                <strong th:text="${employee.daysWorked}">0</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel profile-panel">
+        <div class="heading">
+            <div>
+                <h3>Payroll breakdown</h3>
+                <p>Salary and individual deduction amounts.</p>
+            </div>
+        </div>
+
+        <div class="breakdown">
+            <div>
+                <span>Gross salary</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.grossSalary,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+
+            <div>
+                <span>SSS</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.sss,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+
+            <div>
+                <span>PhilHealth</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.philHealth,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+
+            <div>
+                <span>Pag-IBIG</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.pagIbig,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+
+            <div>
+                <span>Total deductions</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.totalDeductions,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+
+            <div class="net-total">
+                <span>Net salary</span>
+                <strong th:text="'₱' + ${#numbers.formatDecimal(employee.netSalary,1,'COMMA',2,'POINT')}">₱0.00</strong>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        PayEase Student Payroll System
+        <span>Java · Spring Boot · MySQL</span>
+    </footer>
+</main>
+
+</body>
+</html>

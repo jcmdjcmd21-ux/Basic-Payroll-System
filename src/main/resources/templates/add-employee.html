@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PayEase | Add Employee</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand"><b>P</b> PayEase</div>
+    <p class="label">WORKSPACE</p>
+
+    <a href="/">▦ &nbsp; Dashboard</a>
+    <a href="/employees">♙ &nbsp; Employees</a>
+    <a class="active" href="/employees/new">＋ &nbsp; Add employee</a>
+
+    <form class="logout-form" th:action="@{/logout}" method="post">
+        <button class="logout-btn" type="submit">↪ &nbsp; Sign out</button>
+    </form>
+
+    <div class="admin">
+        <span>HR</span>
+        <div>
+            <strong>Administrator</strong>
+            <small>Signed in</small>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <header>
+        <div>
+            <small>Workspace / Employees / Add employee</small>
+            <h1>Add New Employee</h1>
+        </div>
+        <span class="demo">● Admin session</span>
+    </header>
+
+    <section class="welcome">
+        <div>
+            <small>EMPLOYEE REGISTRATION</small>
+            <h2>Employee information</h2>
+            <p>Complete the form to register a new employee and calculate payroll.</p>
+        </div>
+    </section>
+
+    <div class="alert error"
+         th:if="${errorMessage}"
+         th:text="${errorMessage}"></div>
+
+    <section class="panel form-panel">
+        <div class="heading">
+            <div>
+                <h3>Personal and employment details</h3>
+                <p>Enter the employee's basic information.</p>
+            </div>
+            <span class="plus">＋</span>
+        </div>
+
+        <form class="entry"
+              th:action="@{/employees}"
+              th:object="${newEmployee}"
+              method="post">
+
+            <div class="form-grid">
+                <label>
+                    Employee ID
+                    <input th:field="*{employeeId}"
+                           placeholder="e.g. EMP-002"
+                           required maxlength="20">
+                </label>
+
+                <label>
+                    Full name
+                    <input th:field="*{fullName}"
+                           placeholder="Enter full name"
+                           required maxlength="80">
+                </label>
+
+                <label>
+                    Position
+                    <input th:field="*{position}"
+                           placeholder="e.g. Staff"
+                           required maxlength="60">
+                </label>
+
+                <label>
+                    Daily rate (₱)
+                    <input th:field="*{dailyRate}"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           placeholder="500.00"
+                           required>
+                </label>
+
+                <label>
+                    Days worked
+                    <input th:field="*{daysWorked}"
+                           type="number"
+                           min="0"
+                           max="31"
+                           placeholder="22"
+                           required>
+                </label>
+            </div>
+
+            <div class="rule">PAYROLL DEDUCTIONS (PHP)</div>
+
+            <p class="form-description">
+                Enter the employee's deduction amounts. These are manually
+                entered for this student payroll project.
+            </p>
+
+            <div class="three">
+                <label>
+                    SSS
+                    <input th:field="*{sss}"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           placeholder="0.00">
+                </label>
+
+                <label>
+                    PhilHealth
+                    <input th:field="*{philHealth}"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           placeholder="0.00">
+                </label>
+
+                <label>
+                    Pag-IBIG
+                    <input th:field="*{pagIbig}"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           placeholder="0.00">
+                </label>
+            </div>
+
+            <div class="hint">
+                <strong>Payroll calculation</strong><br>
+                Gross Salary = Daily Rate × Days Worked<br>
+                Total Deductions = SSS + PhilHealth + Pag-IBIG<br>
+                Net Salary = Gross Salary − Total Deductions
+            </div>
+
+            <div class="form-actions">
+                <a class="btn cancel-btn" th:href="@{/employees}">
+                    Cancel
+                </a>
+
+                <button class="btn submit" type="submit">
+                    Save Employee &amp; Calculate Payroll →
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <footer>
+        PayEase Student Payroll System
+        <span>Java · Spring Boot · MySQL</span>
+    </footer>
+</main>
+
+</body>
+</html>

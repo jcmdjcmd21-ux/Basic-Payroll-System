@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PayEase | Admin Login</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="login-page">
+
+<main class="login-wrap">
+    <section class="login-card">
+
+        <div class="login-brand">
+            <span>P</span> PayEase
+        </div>
+
+        <p class="eyebrow">ADMINISTRATOR ACCESS</p>
+
+        <h1>Welcome back</h1>
+        <p class="muted">
+            Sign in to manage employee payroll records.
+        </p>
+
+        <div class="alert error" th:if="${param.error}">
+            Invalid username or password.
+        </div>
+
+        <div class="alert success" th:if="${param.logout}">
+            You have been signed out.
+        </div>
+
+        <form class="entry login-form"
+              th:action="@{/login}" method="post">
+
+            <label>
+                Username
+                <input type="text" name="username"
+                       autocomplete="username" required autofocus>
+            </label>
+
+            <label>
+                Password
+                <input type="password" name="password"
+                       autocomplete="current-password" required>
+            </label>
+
+            <button class="btn submit" type="submit">
+                Sign in →
+            </button>
+        </form>
+
+        <p class="login-foot">
+            PayEase Student Payroll System
+        </p>
+
+    </section>
+</main>
+
+</body>
+</html>
