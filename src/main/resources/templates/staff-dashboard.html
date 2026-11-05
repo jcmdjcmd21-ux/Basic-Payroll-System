@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard | PayEase</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="brand"><b>P</b> PayEase</div>
+
+        <span class="label">STAFF MENU</span>
+        <a href="/staff/dashboard" class="active">▦ &nbsp; Dashboard</a>
+        <a href="/staff/payslip">▤ &nbsp; My Payslip</a>
+
+        <div class="admin">
+            <span th:text="${#strings.substring(employee.fullName, 0, 1)}">E</span>
+            <div>
+                <strong th:text="${employee.fullName}">Employee</strong>
+                <small>Staff Account</small>
+            </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="logout-btn">↪ &nbsp; Logout</button>
+        </form>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <small>PAYEASE / STAFF</small>
+                <h1>My Dashboard</h1>
+            </div>
+            <span class="demo">Employee Portal</span>
+        </header>
+
+        <section class="welcome">
+            <div>
+                <small>EMPLOYEE PORTAL</small>
+                <h2>Welcome, <span th:text="${employee.fullName}">Employee</span>!</h2>
+                <p>Here's an overview of your employee and payroll information.</p>
+            </div>
+            <a th:href="@{/staff/payslip}" class="btn">View My Payslip →</a>
+        </section>
+
+        <section class="stats">
+            <article>
+                <small>EMPLOYEE ID</small>
+                <strong th:text="${employee.employeeId}">EMP001</strong>
+                <em>Your registered employee number</em>
+            </article>
+
+            <article>
+                <small>DAILY RATE</small>
+                <strong>₱<span
+                        th:text="${#numbers.formatDecimal(employee.dailyRate, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                <em>Your daily salary rate</em>
+            </article>
+
+            <article>
+                <small>DAYS WORKED</small>
+                <strong th:text="${employee.daysWorked}">0</strong>
+                <em>Recorded working days</em>
+            </article>
+        </section>
+
+        <section class="panel">
+            <div class="heading">
+                <div>
+                    <h3>Personal Information</h3>
+                    <p>Your registered employee details</p>
+                </div>
+                <span class="pill">My Profile</span>
+            </div>
+
+            <div class="profile-grid">
+                <div>
+                    <small>Full Name</small>
+                    <strong th:text="${employee.fullName}">Employee Name</strong>
+                </div>
+                <div>
+                    <small>Employee ID</small>
+                    <strong th:text="${employee.employeeId}">EMP001</strong>
+                </div>
+                <div>
+                    <small>Position</small>
+                    <strong th:text="${employee.position}">Position</strong>
+                </div>
+                <div>
+                    <small>Daily Rate</small>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.dailyRate, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="heading">
+                <div>
+                    <h3>Payroll Summary</h3>
+                    <p>Your current recorded salary breakdown</p>
+                </div>
+                <span class="pill">Current Payroll</span>
+            </div>
+
+            <div class="breakdown">
+                <div>
+                    <span>Gross Salary</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.grossSalary, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+                <div>
+                    <span>SSS Contribution</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.sss, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+                <div>
+                    <span>PhilHealth Contribution</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.philHealth, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+                <div>
+                    <span>Pag-IBIG Contribution</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.pagIbig, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+                <div>
+                    <span>Total Deductions</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.totalDeductions, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+                <div class="net-total">
+                    <span>NET SALARY</span>
+                    <strong>₱<span
+                            th:text="${#numbers.formatDecimal(employee.netSalary, 1, 'COMMA', 2, 'POINT')}">0.00</span></strong>
+                </div>
+            </div>
+
+            <div class="staff-actions">
+                <a th:href="@{/staff/payslip}" class="btn">View Full Payslip →</a>
+            </div>
+        </section>
+
+        <footer>
+            <span>© 2026 PayEase Payroll Management System</span>
+            <span>Staff Portal</span>
+        </footer>
+    </main>
+
+</body>
+
+</html>

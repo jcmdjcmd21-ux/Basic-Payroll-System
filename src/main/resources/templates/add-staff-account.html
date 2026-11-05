@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Staff Account | PayEase</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand"><b>P</b> PayEase</div>
+
+    <span class="label">MAIN MENU</span>
+    <a href="/">▦ &nbsp; Dashboard</a>
+    <a href="/employees">♙ &nbsp; Employees</a>
+    <a href="/employees/new">＋ &nbsp; Add Employee</a>
+    <a href="/admin/staff/new" class="active">♧ &nbsp; Create Staff Account</a>
+
+    <div class="admin">
+        <span>A</span>
+        <div>
+            <strong>Administrator</strong>
+            <small>Admin Account</small>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <header>
+        <div>
+            <small>PAYEASE / ACCOUNT MANAGEMENT</small>
+            <h1>Create Staff Account</h1>
+        </div>
+        <span class="demo">Admin Access</span>
+    </header>
+
+    <section class="welcome">
+        <div>
+            <small>STAFF MANAGEMENT</small>
+            <h2>Create a new Staff login</h2>
+            <p>Give an existing employee secure access to their personal payroll information.</p>
+        </div>
+    </section>
+
+    <section class="panel form-panel account-panel">
+
+        <div class="heading">
+            <div>
+                <h3>Account Information</h3>
+                <p>Complete the details below to register a Staff account.</p>
+            </div>
+            <span class="pill">New Account</span>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert error"
+             th:text="${errorMessage}"></div>
+
+        <form th:action="@{/admin/staff}" th:object="${staffForm}"
+              method="post" class="entry account-form">
+
+            <div class="account-info">
+                <span class="account-icon">♙</span>
+                <div>
+                    <strong>Employee Account</strong>
+                    <small>Each employee can have one linked Staff account.</small>
+                </div>
+            </div>
+
+            <label>
+                Select Employee
+                <select th:field="*{employeeId}" required>
+                    <option value="">Choose an employee</option>
+                    <option th:each="employee : ${employees}"
+                            th:value="${employee.employeeId}"
+                            th:text="${employee.employeeId + ' - ' + employee.fullName}">
+                    </option>
+                </select>
+            </label>
+
+            <div class="account-divider">
+                LOGIN CREDENTIALS
+            </div>
+
+            <label>
+                Staff Username
+                <input type="text"
+                       th:field="*{username}"
+                       placeholder="Enter staff username"
+                       maxlength="50"
+                       autocomplete="off"
+                       required>
+                <small class="field-hint">Use a unique username for this employee.</small>
+            </label>
+
+            <label>
+                Staff Password
+                <input type="password"
+                       th:field="*{password}"
+                       placeholder="Enter temporary password"
+                       minlength="12"
+                       autocomplete="new-password"
+                       required>
+                <small class="field-hint">Use at least 12 characters. Share the password securely with the employee.</small>
+            </label>
+
+            <div class="account-security">
+                <strong>Security reminder</strong>
+                <p>Staff accounts can only view their own employee information and payslip. Never share account credentials with other users.</p>
+            </div>
+
+            <div class="form-actions">
+                <a href="/employees" class="cancel-btn btn">Cancel</a>
+                <button type="submit" class="btn">Create Staff Account →</button>
+            </div>
+        </form>
+    </section>
+
+    <footer>
+        <span>© 2026 PayEase Payroll Management System</span>
+        <span>Administrator Portal</span>
+    </footer>
+</main>
+
+<form th:action="@{/logout}" method="post"
+      style="position:fixed;bottom:20px;right:25px;">
+    <button type="submit" class="logout-btn">Logout</button>
+</form>
+
+</body>
+</html>
